@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+pgvector
+pydantic
+pydantic-settings
+python-dotenv
+passlib[bcrypt]
+pyjwt
+langgraph
+langchain
+google-genai
+httpx
+aiofiles
+python-multipart
