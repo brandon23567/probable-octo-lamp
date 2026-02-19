@@ -4,6 +4,9 @@ from datetime import datetime, timezone
 from app.db.base import Base
 from uuid import uuid4
 
+# now depends on whether we make errors globally or scope them out to per user/project kind of
+# thing. But we will leave it as is for now until we decide otherwise
+
 class ErrorMemory(Base):
     id = Column(String, primary_key=True, index=True, default=lambda: uuid4().hex)
     error_hash = Column(String, index=True, nullable=False)

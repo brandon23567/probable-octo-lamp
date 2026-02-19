@@ -1,9 +1,9 @@
-from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Enum, DateTime, ForeignKey
 from uuid import uuid4
 import enum
 from datetime import datetime, timezone
 from app.db.base import Base
+from sqlalchemy.orm import relationship
 
 class JobStatus(str, enum.Enum):
     PENDING = "pending"
@@ -20,3 +20,5 @@ class Job(Base):
     result_summary = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    
+    user = relationship("User", back_populates="user_project_jobs")

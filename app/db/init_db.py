@@ -10,6 +10,9 @@ from app.models.job import Job
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# this is basically using raw sql commands using sqlalchmey to make sure this pgvector extension
+# is enabled for us before we begin any kind of operations moving forward
+
 def init_db():
     try:
         with engine.connect() as connection:

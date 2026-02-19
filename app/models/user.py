@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from app.db.base import Base
 from uuid import uuid4 
 from datetime import datetime, timezone
+from sqlalchemy.orm import relationship
 
 class User(Base):
     id = Column(String, primary_key=True, index=True, default=lambda: uuid4().hex)
@@ -9,3 +10,6 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     date_created = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    
+    user_project_jobs = relationship("Job", back_populates="user")
+    user_projects = relationship("Project", back_populates="user")
