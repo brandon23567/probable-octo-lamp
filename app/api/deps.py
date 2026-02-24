@@ -18,20 +18,6 @@ def get_token_from_cookie(request: Request) -> Optional[str]:
     return request.cookies.get("access_token")
 
 
-# def get_current_user(
-#     db: Session,
-#     user_token: str = Depends(oauth2_scheme)
-# ):
-#     try:
-#         print("")
-        
-#     except Exception as e:
-#         print(f"Unable to get the current user: {str(e)}")
-#         raise HTTPException(
-#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             detail="Unable to get the current user"
-#         )
-
 def get_current_user(
     request: Request,
     db: Session = Depends(get_db),

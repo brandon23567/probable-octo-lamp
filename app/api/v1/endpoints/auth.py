@@ -19,9 +19,9 @@ router = APIRouter()
 
 @router.post("/login")
 def signin_user(
-    db: Session,
     user_data: UserSigninSchema,
-    response: Response
+    response: Response,
+    db: Session = Depends(get_db),
 ):
     existing_user = db.execute(select(User).where(User.id == user_data.id)).scalar_one_or_none()
     if not existing_user:
@@ -129,9 +129,9 @@ def refresh_token(
 
 @router.post("/refresh")
 def refresh_user_tokens(
-    db: Session,
     request: Request,
-    response: Response
+    response: Response,
+    db: Session = Depends(get_db),
 ):
     user_token = request.cookies.get("access_token")
     if not user_token:
