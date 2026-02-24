@@ -1,24 +1,46 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
-class UserBase(BaseModel):
+class UserResponseSchema(BaseModel):
+    id: int
+    username: str 
     email: EmailStr
-    is_active: Optional[bool] = True
+    
+    model_config = ConfigDict(from_attributes=True)
+    
+    
+class UserSignupSchema(BaseModel):
+    username: str = Field(..., description="username")
+    email: EmailStr = Field(..., description="user email")
+    password: str = Field(..., description="password")
+    
+    model_config = ConfigDict(from_attributes=True)
+    
 
-class UserCreate(UserBase):
-    password: str
+class UserSigninSchema(BaseModel):
+    username: str = Field(..., description="username for user to log in")
+    password: str = Field(..., description="password for user to log in")
+    
+    model_config = ConfigDict(from_attributes=True)
 
-class UserUpdate(UserBase):
-    password: Optional[str] = None
+# class UserBase(BaseModel):
+#     email: EmailStr
+#     is_active: Optional[bool] = True
 
-class UserInDBBase(UserBase):
-    id: Optional[int] = None
+# class UserCreate(UserBase):
+#     password: str
 
-    class Config:
-        from_attributes = True
+# class UserUpdate(UserBase):
+#     password: Optional[str] = None
 
-class User(UserInDBBase):
-    pass
+# class UserInDBBase(UserBase):
+#     id: Optional[int] = None
 
-class UserInDB(UserInDBBase):
-    hashed_password: str
+#     class Config:
+#         from_attributes = True
+
+# class User(UserInDBBase):
+#     pass
+
+# class UserInDB(UserInDBBase):
+#     hashed_password: str

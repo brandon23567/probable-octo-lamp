@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = os.getenv("SECRET_KEY", "supersecretkey")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8 # We might need to change this as it is suspicious looking ai am i right? 
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
     
 

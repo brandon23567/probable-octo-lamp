@@ -1,4 +1,4 @@
-from typing import Generator, Optional
+from typing import Optional
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 import jwt
@@ -10,19 +10,34 @@ from app.core.config import settings
 from app.models.user import User
 from app.schemas.token import TokenPayload
 from app.db.session import get_db
+from app.schemas.user import *
 
-# We keep this for Swagger UI compatibility if needed, but we rely on cookies
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login", auto_error=False)
 
 def get_token_from_cookie(request: Request) -> Optional[str]:
     return request.cookies.get("access_token")
 
+
+# def get_current_user(
+#     db: Session,
+#     user_token: str = Depends(oauth2_scheme)
+# ):
+#     try:
+#         print("")
+        
+#     except Exception as e:
+#         print(f"Unable to get the current user: {str(e)}")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="Unable to get the current user"
+#         )
+
 def get_current_user(
     request: Request,
     db: Session = Depends(get_db),
     token_header: Optional[str] = Depends(oauth2_scheme)
-) -> User:
-    # Prioritize cookie, fallback to header
+) -> UserResponseSchema:
+    
     token = get_token_from_cookie(request) or token_header
     
     if not token:
@@ -41,19 +56,19 @@ def get_current_user(
         if payload.get("type") != "access":
             raise HTTPException(status_code=401, detail="Invalid token type")
             
-    except (JWTError, ValidationError):
+    except (jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
         )
-    user = db.query(User).filter(User.id == int(token_data.sub)).first()
+    user = db.query(User).filter(User.id == str(token_data.sub)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
 def get_current_active_user(
     current_user: User = Depends(get_current_user),
-) -> User:
+) -> UserResponseSchema:
     if not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
