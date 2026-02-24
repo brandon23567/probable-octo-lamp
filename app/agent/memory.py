@@ -4,23 +4,20 @@ from typing import Optional, Tuple
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from pgvector.sqlalchemy import Vector
-
+from sentence_transformers import SentenceTransformer
 from app.agent.llm import get_model
 from app.models.error_memory import ErrorMemory
 from app.db.session import SessionLocal
 
 logger = logging.getLogger("agent")
 
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
 # need to use a local embedding model and not this one
 async def get_embedding(text: str) -> list[float]:
-    model = get_model("models/text-embedding-004")
-    result = await model.embed_content_async(
-        model="models/text-embedding-004",
-        content=text,
-        task_type="retrieval_document"
-    )
-
-    return result['embedding']
+    embeddings = embedding_model.encode(text)
+    
+    return embeddings
 
 def calculate_hash(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()

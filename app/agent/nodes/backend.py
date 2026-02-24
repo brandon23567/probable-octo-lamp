@@ -30,7 +30,7 @@ async def generate_backend_node(state: AgentState):
     """
     
     try:
-        response_text = await generate_structured_content(prompt, FileList, model_name="gemini-2.5-flash") # Using flash for speed/cost or config default
+        response_text = await generate_structured_content(prompt, FileList, model_name="gemini-3-flash-preview")
         import json
         data = json.loads(response_text)
         files = data.get("files", [])

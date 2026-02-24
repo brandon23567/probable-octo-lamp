@@ -38,11 +38,13 @@ def signin_user(
         
         user_tokens = generate_user_tokens(user_tokens_data)
         
+        expires_in = datetime.now(timezone.utc) + timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        
         response.set_cookie(
             key="access_token",
             value=user_tokens["access_token"],
             max_age=3600,
-            expires=timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+            expires=expires_in,
             path="/",
             secure=False,
             httponly=False,
@@ -53,7 +55,7 @@ def signin_user(
             key="refresh_token",
             value=user_tokens["refresh_token"],
             max_age=3600,
-            expires=timedelta(settings.REFRESH_TOKEN_EXPIRE_DAYS),
+            expires=expires_in,
             path="/",
             secure=False,
             httponly=False,
@@ -149,11 +151,13 @@ def refresh_user_tokens(
         
         user_tokens = generate_user_tokens(user_tokens_data)
         
+        expires_in = datetime.now(timezone.utc) + timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        
         response.set_cookie(
             key="access_token",
             value=user_tokens["access_token"],
             max_age=3600,
-            expires=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+            expires=expires_in,
             path="/",
             domain="/",
             secure=False,
@@ -163,8 +167,17 @@ def refresh_user_tokens(
         
         response.set_cookie(
             key="refresh_token",
-            value=user_tokens["refresh_token"]
+            value=user_tokens["refresh_token"],
+            max_age=3600,
+            expires=expires_in,
+            path="/",
+            domain="/",
+            secure=False,
+            httponly=False,
+            samesite="lax"
         )
+        
+        return { "message": "Tokens refreshed" }
         
         
     except Exception as e:
